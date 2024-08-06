@@ -2,11 +2,17 @@ name: ci
 on:
   push:
     paths:
-      - 'code/docker/**'
+      - 'docker/**'
 jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
+      - name: Dotenv Action
+        uses: falti/dotenv-action@v1.1.4
+        with:
+          path: docker/.env
+          log-variables: true
+          export-variables: true
       - name: "Set up QEMU"
         uses: docker/setup-qemu-action@v3
       - name: "Set up Docker Buildx"
@@ -19,6 +25,6 @@ jobs:
       - name: "Build and push"
         uses: docker/build-push-action@v5
         with:
-          context: "{{defaultContext}}:code/docker"
+          context: "{{defaultContext}}:docker"
           push: true
           tags: germann/dockerhub-ci:test
